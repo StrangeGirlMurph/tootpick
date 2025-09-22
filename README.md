@@ -1,30 +1,18 @@
 # Tootpick
 
-Tootpick is a privacy-preserving tooter.
+Tootpick is a privacy-preserving tool to create shareable links for Mastodon posts and provide an easy link target for a "Mastodon share button" similar to other social media share buttons or [mailto](https://en.wikipedia.org/wiki/Mailto) links.
 
-Its purpose is providing an easy link target for a "Mastodon share button",
-similar to other social media share buttons.
-
-[<img src="https://raw.githubusercontent.com/mastodon/mastodon/main/app/javascript/images/app-icon.svg" width=16> Share on Mastodon](https://tootpick.org/#text=%23tootpick%20is%20a%20privacy-preserving%20Mastodon%20share%20button%20link%20target%0A%0Ahttps://github.com/Juerd/tootpick) ← demo!
+Try this demo: [Share on Mastodon <img src="https://raw.githubusercontent.com/mastodon/mastodon/main/app/javascript/images/app-icon.svg" width=12>](http://tootpick.org/#text=Checkout%20%23tootpick%20a%20privacy-preserving%20tool%20to%20create%20shareable%20links%20for%20Mastodon%20posts%20and%20provide%20an%20easy%20link%20target%20for%20a%20%22Mastodon%20share%20button%22%20similar%20to%20other%20social%20media%20share%20buttons%20%F0%9F%8E%89)
 
 ## Using Tootpick
 
-To allow visitors to share a message via Mastodon, provide a link to
+tl;dr Visit <https://tootpick.org/> and share the generated link.
 
-```
-https://tootpick.org/#text=Everyone%20should%20visit%20https://example.org/
-```
+To allow visitors to share a message via Mastodon, provide a link to <https://tootpick.org/> with the text parameter being set to your URI encoded message. Something like this: `https://tootpick.org/#text=Everyone%20should%20visit%20https://example.org/`. In the link the message after `https://tootpick.org/#text=` must be URI encoded, i.e. spaces must be replaced by `%20`, ampersands by `%26`, etcetera, just like it is common for URLs. The good news is tootpick can do that for you. If you visit <https://tootpick.org/> without providing the `#text=...` parameter you get a textfield to enter a message and generate a link for it!
 
-This will let the visitor pick their Mastodon server and post the message
-"Everyone should visit https://example.org/". When sharing an article or web
-page, don't forget to include the URL as part of the text. The text must be
-"URI encoded", i.e. spaces must be replaced by `%20`, ampersands by `%26`,
-etcetera, just like is common for URLs. It is customary to include several
-relevant hashtags; use `%23` for the `#` sign. For details, see "Fragment
-parameters" below.
+Visitor of that link with the text parameter set will then pick their Mastodon instance via tootpick and post the message "Everyone should visit https://example.org/" on the specified instance. 
 
-Most Mastodon servers have a 500 character limit so it's wise to keep your
-message shorter than that. Tootpick does not check the length of the message.
+Most Mastodon instances usually have a character limit of 500 so it's wise to keep your message shorter than that. Tootpick will warn you when you go over that.
 
 ## Design goals
 
@@ -89,6 +77,7 @@ thinking about, does not exist. Please don't make the mistake of picking a
 large server and linking directly to its /share URL, because the majority of
 Mastodon users will not be on that server.
 </details>
+
 <details><summary>
 
 ## Self-hosting
@@ -104,14 +93,15 @@ Tootpick could be used to collect the Mastodon instances used by the visitor,
 but on the other hand hides visitor IP addresses from the server that hosts the
 service on tootpick.org.
 </details>
+
 <details><summary>
 
 ## Button image
 
 </summary>
-No button image is provided at this point, but the [official Mastodon logo](https://github.com/mastodon/mastodon/tree/main/app/javascript/images)
-is probably a good starting point for designing your own.
+No button image is provided at this point, but the <a href="https://github.com/mastodon/mastodon/tree/main/app/javascript/images"> official Mastodon logo</a> is probably a good starting point for designing your own.
 </details>
+
 <details><summary>
 
 ## Fragment parameters
@@ -121,8 +111,8 @@ Although Tootpick currently only uses a single parameter, `text`, it is ready
 for accepting more than that.
 
 The parsing of the URI fragment, that is part after the `#`, is done as
-described in the [Media Fragments URI
-specification](https://www.w3.org/TR/media-frags/#processing-name-value-components)
+described in the <a href="https://www.w3.org/TR/media-frags/#processing-name-value-components">Media Fragments URI
+specification</a>
 which assumes RFC 3986 URI escaping. (Note: Tootpick does not use media
 fragments, just the syntax for parameters in URI fragments.)
 
@@ -165,6 +155,7 @@ would normally be wrong. It can be used like
 | Java     | java.net.URLEncoder.encode()                     |
 | Jekyll   | cgi\_escape()                                    |
 </details>
+
 <details><summary>
 
 ## Similar projects
@@ -176,6 +167,7 @@ Tootpick is not the first of its kind. It draws inspiration from:
 - [Advanced Sharer for Mastodon](https://sharetomastodon.github.io/about/)
 - [Mastodon Share Button](https://aly-ve.github.io/Mastodon-share-button/)
 </details>
+
 <details><summary>
 
 ## Future improvements
@@ -183,7 +175,6 @@ Tootpick is not the first of its kind. It draws inspiration from:
 </summary>
 At some point in the future, I hope to:
 
-- Have an alternative "light mode" for people who don't like dark pages.
 - Detect the visitor's language and show translated texts.
 - Supply a list of existing instances. Not sure if it's useful enough to add
   extra weight, and not sure how to determine which instances to include or

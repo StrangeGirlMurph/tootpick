@@ -1,521 +1,750 @@
-<!DOCTYPE html>
-<meta charset=UTF-8>
-<title>Tootpick</title>
-
 <!--
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
 -->
+<!DOCTYPE html>
+<html lang="en">
 
-<meta name=viewport content="width=device-width, initial-scale=1">
-<meta name=referrer content=no-referrer>
-<meta http-equiv=Content-Security-Policy content="default-src 'self' 'unsafe-inline' https:; connect-src https:; img-src  https:">
-<link rel=icon href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 -14 16 16'&gt;&lt;text&gt;🔁&lt;/text&gt;&lt;/svg&gt;">
-<style>
-	* {
-		box-sizing: border-box;
-	}
-	html {
-		height: 100%;
-		padding: 0;
-		margin: 0;
-	}
-	body {
-		padding: 0;
-		margin: 0;
-		display: flex;
-		min-height: 100%;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		background: #d9dce6;
-		background-size: cover;
-		background-position: 50% 50%;
-		line-height: 120%;
-		color: white;
-		font-family: sans-serif;
-		font-size: 15px;
-	}
-	main * {
-		font: inherit;
-		border: 0;
-		border-radius: 4px;
-	}
-	:focus {
-		outline: 1px dashed #eee;
-		outline-offset: 2px;
-	}
-	::placeholder {
-		font-style: italic;
-		color: #666;
-	}
-	a, summary {
-		color: inherit;
-		text-decoration: underline;
-		cursor: pointer;
-	}
-	a:hover, summary:hover {
-		filter: brightness(150%);
-	}
-	main {
-		display: flex;
-		flex-direction: column;
-		gap: .8em;
-		background: #444b5d;
-		border-radius: 4px;
-		padding: .8em;
-		max-width: 40rem;
-		margin-top: auto;
-		margin-bottom: auto;
-		transition: opacity 1s; /* same as JS timeout */
-		opacity: 1;
-	}
-	.transparent {
-		opacity: 0;
-	}
-	#message {
-		margin: 0;
-		background: white;
-		padding: .5em;
-		width: 100%;
-		background: #eee;
-		color: #222;
-		max-height: 9em;
-		overflow: auto;
-		cursor: not-allowed;
-	}
-	#message:hover {
-		background: #ccc;
-		color: #888;
-	}
-	#inputline {
-		display: flex;
-		align-items: center;
-		gap: .5em;
-		flex-wrap: wrap;
-	}
-	#inputline label {
-		flex: 1 0 auto;
-		display: flex;
-		align-items: center;
-	}
-	#inputline span#server {
-		white-space: nowrap;
-		margin-right: .5em;
-	}
-	input#instance {
-		padding: .2em .5em;
-		flex: 1 1 30em;
-		min-width: 10em;
-	}
-	input#instance:focus {
-		outline: 0;
-	}
-	button, input[type="submit"] {
-		background: #5455ff;
-		color: #fff;
-		padding: 7px 10px;
-		font-weight: 500;
-		font-size: 15px;
-		cursor: pointer;
-	}
-	button:hover, input[type="submit"]:hover {
-		background: #6364ff;
-	}
-	button:focus, input[type="submit"]:focus {
-		outline-offset: -5px;
-	}
-	#toot {
-		margin-left: auto;
-	}
-	#recent {
-		display: flex;
-		justify-content: space-around;
-		flex-wrap: wrap;
-		gap: .5em;
-	}
-	#recent > button {
-		flex: 0 1 140px;
-		display: flex;
-		flex-direction: column;
-		gap: .5em;
-		align-items: center;
-		padding-top: .5em;
-		position: relative;
-		margin-top: 1em;
-	}
-	#recent > button img {
-		width: 120px;
-		aspect-ratio: 1200/630;
-		object-fit: cover;
-	}
-	button.delete {
-		background: black;
-		color: #df405a;
-		position: absolute;
-		padding: .2em .3em;
-		top: .2em;
-		right: .2em;
-	}
-	button.delete::after {
-		content: '\002716';  /* HEAVY MULTIPLICATION X */
-	}
-	button.delete:hover {
-		background: #df405a;
-		color: white;
-	}
-	footer {
-		color: #1a1a1a;
-		padding: 1em;
-		text-align: center;
-	}
-	#statusline {
-		padding: .5em;
-		background: #9baec8;
-		color: black;
-	}
-	#statusline.error {
-		background: #df405a;
-		color: black;
-	}
-	.hidden {
-		display: none !important;
-	}
-	footer details:not([open]) {
-		display: inline-block;
-	}
-	footer details:not([open])::before {
-		content: '\0000B7\000020';  /* MIDDLE DOT, SPACE */
-	}
-	footer summary {
-		display: inline-block;
-	}
-	footer details[open] {
-		border: 1px solid #aaa;
-		padding: .5em;
-		max-width: 40em;
-		margin: .5em auto;
-	}
-	h4 {
-		margin: .5em;
-	}
-	@media (prefers-color-scheme: dark) {
+<head>
+	<title>Tootpick</title>
+	<meta name="description" content="Privacy-preserving tool to create shareable links for Mastodon posts. Generate links that let users easily share content over their Mastodon instance.">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="referrer" content="no-referrer">
+	<meta name="color-scheme" content="light dark">
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src https: ws://127.0.0.1:* ws://localhost:*; img-src https: data:; object-src 'none'; base-uri 'self'; form-action 'self';">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔁</text></svg>">
+	<style>
+		:root {
+			--bg-color: #f0f2f5;
+			--main-bg: #ffffff;
+			--text-color: #2c3e50;
+			--input-bg: #f8f9fa;
+			--input-text: #2c3e50;
+			--input-hover-bg: #e9ecef;
+			--button-bg: #6c7aff;
+			--button-hover-bg: #7c89ff;
+			--footer-text: #495057;
+			--status-bg: #e3f2fd;
+			--error-color: #dc3545;
+			--warning-color: #fd7e14;
+			--placeholder-color: #6c757d;
+		}
+
+		@media (prefers-color-scheme: dark) {
+			:root {
+				--bg-color: #191b22;
+				--main-bg: #2a2d36;
+				--text-color: #e1e8ed;
+				--input-bg: #3a3d46;
+				--input-text: #e1e8ed;
+				--input-hover-bg: #4a4d56;
+				--button-bg: #4a5cff;
+				--button-hover-bg: #5a6cff;
+				--footer-text: #aaa;
+				--status-bg: #5a6c88;
+				--error-color: #ff4a6a;
+				--warning-color: #ffa500;
+				--placeholder-color: #999;
+			}
+		}
+
+		* { box-sizing: border-box; }
+
 		body {
-			background: #191b22;
+			margin: 0;
+			min-height: 100vh;
+			display: grid;
+			grid-template-rows: 1fr auto;
+			padding: .5em;
+			background: var(--bg-color);
+			color: var(--text-color);
+			font-family: sans-serif;
+			font-size: 15px;
+			line-height: 120%;
 		}
+
+		main {
+			align-self: center;
+			justify-self: center;
+			width: 100%;
+			max-width: 40rem;
+			display: flex;
+			flex-direction: column;
+			padding: .7em;
+			background: var(--main-bg);
+			border-radius: 4px;
+		}
+
+		.interface {
+			display: flex;
+			flex-direction: column;
+			gap: .5em;
+		}
+
+		a { color: inherit; text-decoration: underline; cursor: pointer; }
+
 		footer {
-			color: #aaa;
+			margin-top: 1em;
+			margin-bottom: .5em;
+			text-align: center;
+			color: var(--footer-text);
+			display: flex;
+			flex-direction: column;
+			gap: 0.4em;
 		}
-	}
-</style>
+		footer p { margin: 0; }
 
-<script>
-	let message;
-	let notMastodon = 'That does not appear to be a Mastodon server.';
-	let timers = [];
-
-	function $(q) {
-		return document.querySelector(q);
-	}
-
-	function resetStyle() {
-		document.body.style.backgroundImage = 'none';
-		$('main').classList.remove('transparent');
-	}
-
-	function error(msg) {
-		let el = $('#statusline');
-		el.innerText = msg;
-		el.classList.add('error');
-		el.classList.remove('hidden');
-	}
-
-	function clearStatus() {
-		let el = $('#statusline');
-		el.classList.add('hidden');
-		el.classList.remove('error');
-		el.innerText = '';
-	}
-
-	function status(msg) {
-		let el = $('#statusline');
-		el.innerText = msg;
-		el.classList.remove('error');
-		el.classList.remove('hidden');
-	}
-
-	function setLocationGlobals() {
-		let hash = document.location.hash.replace(/^#/, '');
-		let args = {};
-		for (let arg of hash.split('&')) {
-			let i = arg.indexOf('=');  // .split() can't preserve a second "="
-			let k = arg.substr(0, i);
-			let v = arg.substr(i + 1);
-			try { args[ decodeURIComponent(k) ] = decodeURIComponent(v); }
-			catch (e) { }  // ignore URIError
-		}
-		message = args['text'] || "If you want a 'share with Mastodon' link on your website, have a look at Tootpick. https://tootpick.org/ #mastodon #tootpick";
-		if (args['plustospace'] == "yes") message = message.replace(/\+/g, " ");
-
-		$("#message").innerText = message;
-	}
-
-	function getRecent() {
-		try { return JSON.parse(localStorage.getItem('recent')) || []; }
-		catch (e) { return []; }
-	}
-
-	function setRecent(obj) {
-		// Deduplicate
-		let seen = new Set();
-		obj = obj.filter(x => {
-			let key = x['domain'];
-			return seen.has(key) ? false : seen.add(key);
-		});
-
-		// The box will show 2, 3, or 4 per row, limit of 12 ensures
-		// truncating at a whole row.
-		if (obj.length > 12) obj.length = 12;
-
-		localStorage.setItem('recent', JSON.stringify(obj));
-	}
-
-	function populateRecent() {
-		let recent = getRecent();
-
-		if (!recent.length) {
-			$("#recent").classList.add('hidden');
-			return;
+		main * {
+			background: transparent;
+			border: 0;
+			border-radius: 4px;
+			font: inherit;
+			margin: 0;
+			padding: 0;
 		}
 
-		$('#recent').innerHTML = '';
-
-		for (let item of getRecent()) {
-			let div = document.createElement('button');
-			div.dataset['instance'] = JSON.stringify(item);
-			let img = document.createElement('img');
-			img.src = item['thumbnail'];
-			img.setAttribute('alt', '');  // intentional empty string
-			let del = document.createElement('button');
-			del.classList.add('delete');
-			del.setAttribute('title', 'Forget ' + item['domain']);
-			let text = document.createElement('div');
-			text.innerText = "Continue with\n" + item['domain'];
-
-			div.setAttribute('title', item['title']);
-			div.appendChild(del);
-			div.appendChild(img);
-			div.appendChild(text);
-			$('#recent').appendChild(div);
+		button,
+		input[type="submit"] {
+			background: var(--button-bg);
+			color: #fff;
+			padding: .5em;
+			cursor: pointer;
+			font-weight: 600;
 		}
-	}
+		button:hover,
+		input[type="submit"]:hover { background: var(--button-hover-bg); }
 
-	function tootRedirect(domain, message) {
-		document.location = `https://${domain}/share?text=${ encodeURIComponent(message) }`;
-	}
+		#privacy-toggle { background: none !important; border: 0; padding: 0; color: inherit; text-decoration: underline; font: inherit; cursor: pointer; }
+		#privacy-toggle:hover { background: none; }
 
-	function tryNewInstance(domain, message) {
-		status(`Connecting to ${domain}...`);
+		#message-preview,
+		#compose-field {
+			padding: .5em;
+			border: 1px solid var(--input-hover-bg);
+			background: var(--input-bg);
+			color: var(--input-text);
+		}
 
-		fetch(`https://${domain}/api/v1/instance`)
-		.then((resp) => resp.json())
-		.then(function (data) {
-			if (!data['version'] || data['version'].match(/compatible/i)) {
-				error(notMastodon);
-				return;
+		#instance-field {
+			flex-grow: 1;
+			padding: .2em .5em;
+			border: 1px solid var(--input-hover-bg);
+			background: var(--input-bg);
+			color: var(--input-text);
+		}
+
+		#compose-field { min-height: 100px; width: 100%; resize: vertical; }
+		::placeholder { color: var(--placeholder-color); font-style: italic; }
+		:focus { outline: 2px solid #7aa7ff; outline-offset: 2px; border-radius: 1px; }
+
+		.sr-only {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			padding: 0;
+			margin: -1px;
+			overflow: hidden;
+			clip: rect(0, 0, 0, 0);
+			white-space: nowrap;
+			border: 0;
+		}
+		.hidden { display: none !important; }
+
+		/* Share interface */
+		#message-preview {
+			margin: 0;
+			width: 100%;
+			max-height: 9em;
+			overflow-y: auto; 
+			overflow-x: hidden; 
+			scrollbar-gutter: auto;
+			overflow-wrap: break-word;
+			word-break: normal;
+			cursor: help;
+		}
+
+		#inputline { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+		#inputline label { display: flex; align-items: center; min-width: auto; flex-grow: 1; }
+
+		#recent {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+			gap: .75rem;
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+		#recent li { position: relative; }
+		#recent li>button.recent-item {
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			gap: .5em;
+			align-items: center;
+			padding-top: .5em;
+			border: 1px solid var(--input-hover-bg);
+			color: var(--text-color);
+			background: transparent;
+		}
+		#recent li img { width: 120px; aspect-ratio: 1200/630; object-fit: cover; }
+
+		button.delete {
+			position: absolute;
+			top: .2em; right: .2em;
+			padding: .2em .3em;
+			background: var(--main-bg);
+			color: var(--error-color);
+		}
+		button.delete::after { content: '\002716'; /* HEAVY MULTIPLICATION X */ }
+		button.delete:hover { background: var(--error-color); color: var(--text-color); }
+
+		/* Compose interface */
+		.button-group { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; }
+		#compose-actions button { flex: 0 0 auto; text-align: center; }
+		#char-count { font-size: 0.9em; opacity: 0.7; cursor: help; margin-left: auto; }
+		#link-output {
+			width: 100%;
+			padding: .5em;
+			background: var(--bg-color);
+			color: var(--text-color);
+			font-family: monospace;
+			font-size: 0.9em;
+			word-break: break-all;
+			white-space: pre-wrap;
+			cursor: text;
+		}
+
+		/* Status lines */
+		#compose-statusline,
+		#share-statusline { background: var(--status-bg); border-radius: 4px; }
+
+		#char-count.warning { color: var(--warning-color); }
+		#char-count.error { color: var(--error-color); }
+		#compose-statusline.error,
+		#share-statusline.error { color: var(--error-color); background: transparent; }
+	</style>
+</head>
+
+<body>
+	<script>
+		let message;
+		let userTriedToShowLink = false;
+
+		function $(q) {
+			return document.querySelector(q);
+		}
+
+		function getActiveStatusLine() {
+			if (!$('#compose-interface').classList.contains('hidden')) {
+				return $('#compose-statusline');
+			} else {
+				return $('#share-statusline');
 			}
-			let thumbnail = data['thumbnail'];
-			let title = data['title'];
+		}
 
-			if ($('#remember').checked) {
-				let recent = getRecent();
-				recent.unshift({ domain, thumbnail, title });
-				setRecent(recent);
-			}
+		function error(msg) {
+			let el = getActiveStatusLine();
+			el.innerText = msg;
+			el.classList.add('error');
+			el.classList.remove('hidden');
+			// Make errors assertive for assistive tech
+			el.setAttribute('role', 'alert');
+			el.setAttribute('aria-live', 'assertive');
+		}
 
-			let redirect = () => tootRedirect(domain, message);
-			// backgroundImage doesn't trigger events; dummy image will load
-			// while background is also loaded, browser uses single connection
-			// for both.
-			let dummy = new Image();
-			dummy.addEventListener('error', redirect);  // no point in waiting
-			dummy.addEventListener('load', () => {
-				timers.push(setTimeout(redirect, 1000));
-				$("main").classList.add('transparent');
-				// backgroundImage not set here but loading in parallel,
-				// so visitor can see loading happening
-			});
-			dummy.src = thumbnail;
-			document.body.style.backgroundImage = `url(${thumbnail})`;
-			timers.push(setTimeout(redirect, 3500));  // fallback;
-		})
-		.catch((err) => {
-			// Can't do real webfinger, because that needs an acct: parameter.
-			// But we can at least do an opportunistic attempt to support
-			// *some* servers where WEB_DOMAIN != LOCAL_DOMAIN. This only
-			// works if the redirect and the target both allow CORS.
-			fetch(`https://${domain}/.well-known/webfinger`)
-			.then((resp) => {
-				if (resp.redirected) {
-					let found = resp.url.match(/^https:\/\/([^\/]+)\/\.well-known\/webfinger/);
-					if (found) tryNewInstance(found[1], message);
-					else throw(new Error('Weird webfinger'));
-				} else {
-					throw(new Error('No webfinger'));
-				}
-			})
-			.catch((err) => error(notMastodon));
-		});
+		function clearStatus() {
+			let el = getActiveStatusLine();
+			el.classList.add('hidden');
+			el.classList.remove('error');
+			el.innerText = '';
+			// Reset to polite status role
+			el.setAttribute('role', 'status');
+			el.setAttribute('aria-live', 'polite');
+			// Clear input error state if present
+			const inst = document.getElementById('instance-field');
+			if (inst) inst.removeAttribute('aria-invalid');
+		}
 
-	}
-
-	window.addEventListener('hashchange', setLocationGlobals);
-
-	window.addEventListener('pageshow', () => {
-		while (timers.length) clearTimeout(timers.shift());
-		resetStyle();
-		setLocationGlobals();
-		populateRecent();
-		clearStatus();
-	});
-
-	window.addEventListener('DOMContentLoaded', () => {
-		$("#instance").addEventListener('keydown', clearStatus);
-		$("#instance").addEventListener('click', clearStatus);
-
-		$("#message").addEventListener('click', () => {
-			status($("#message").getAttribute('title'))
-		});
-
-		$("form").addEventListener('submit', (e) => {
-			e.preventDefault();
-
-			// domain is expected, but user might enter URL
-			let instance = $("#instance").value.trim();
-
-			if (instance == '') {
-				error($("#instance").closest("label").getAttribute("title"));
-				return;
-			}
-
-			// remove trailing slash and username, if present
-			instance = instance.replace(/\/+(?:@.*)?$/, "");
-
-			// newbies may write https:foo or https//foo too.
-			instance = instance.replace(/^https?\W+/, "");
-
-			// Deal with user@host and @user@host, and for really advanced
-			// newbies, acct:user@host because why not :)
-			instance = instance.replace(/^(?:acct:)?@?[^@]+@/, "");
-
-			// Some advanced users may enter an FQDN with a trailing dot, but
-			// that needs to be normalized because the domain is used as a
-			// lookup key. Speaking of normalization, let's lowercase.
-			instance = instance.replace(/\.$/, "").toLowerCase();
-
-			// Check whether the input is a valid domain name, in order to
-			// prevent leaking e.g. pasted clipboard text (passwords, credit
-			// card numbers, love letters, ...) via DNS. Can't prevent
-			// every mistake, but let's catch at least the obvious cases.
-			if (! instance.match(/^(?:(?:xn--)?[a-z0-9]+[-.])*[a-z0-9]+\.[a-z]{2,}$/)) {
-				// TODO: support user readable IDN and %-encoded IDN (both uncommon)
-				error('Not a valid internet domain name.');
-				return;
-			}
-
-			$("#instance").value = instance;
-
-			tryNewInstance(instance, message);
-		});
-
-		$("#recent").addEventListener('click', (event) => {
-			let button = event.target.closest('button');
+		function showButtonFeedback(buttonId, originalText, feedbackText, duration = 2000) {
+			const button = $(buttonId);
 			if (!button) return;
 
+			button.textContent = feedbackText;
+			button.disabled = true;
 
-			if (button.classList.contains('delete')) {
-				let instance = JSON.parse( button.parentElement.dataset['instance'] );
+			setTimeout(() => {
+				button.textContent = originalText;
+				button.disabled = false;
+			}, duration);
+		}
 
-				setRecent(getRecent().filter(
-					x => x['domain'] != instance['domain']
-				));
-
-				button.parentElement.remove();
-			} else {
-				let instance = JSON.parse( button.dataset['instance'] );
-				document.body.style.backgroundImage = `url(${ instance['thumbnail'] })`;
-
-				let recent = getRecent();
-				recent.unshift(instance);
-				setRecent(recent);
-
-				$("main").classList.add('transparent');
-				timers.push(setTimeout(() => tootRedirect(instance['domain'], message), 1000));
+		function processHash() {
+			const hash = document.location.hash.replace(/^#/, '');
+			const args = {};
+			if (hash) {
+				for (const part of hash.split('&')) {
+					if (!part) continue;
+					const eq = part.indexOf('=');
+					if (eq === -1) continue;
+					const k = part.slice(0, eq);
+					const v = part.slice(eq + 1);
+					try { args[decodeURIComponent(k)] = decodeURIComponent(v); } catch (_) { }
+				}
 			}
+			message = args['text'] || null;
+			if (message && args['plustospace'] == "yes") message = message.replace(/\+/g, " ");
+
+			if (message) {
+				$("#message-preview").innerText = message;
+				$("#compose-interface").classList.add('hidden');
+				$("#share-interface").classList.remove('hidden');
+				$("#instance-field").focus();
+			} else {
+				$("#compose-interface").classList.remove('hidden');
+				$("#share-interface").classList.add('hidden');
+				$("#compose-field").focus();
+			}
+		}
+
+		function getRecent() {
+			try { return JSON.parse(localStorage.getItem('recent')) || []; }
+			catch (e) { return []; }
+		}
+
+		function setRecent(obj) {
+			// Deduplicate
+			let seen = new Set();
+			obj = obj.filter(x => {
+				let key = x['domain'];
+				return seen.has(key) ? false : seen.add(key);
+			});
+
+			// The box will show 2, 3, or 4 per row, limit of 12 ensures
+			// truncating at a whole row.
+			if (obj.length > 12) obj = obj.slice(0, 12);
+
+			localStorage.setItem('recent', JSON.stringify(obj));
+		}
+
+		function populateRecent() {
+			let recent = getRecent();
+
+			if (!recent.length) {
+				$("#recent").classList.add('hidden');
+				return;
+			}
+
+			const list = $('#recent');
+			list.innerHTML = '';
+
+			for (let item of recent) {
+				const li = document.createElement('li');
+				li.dataset['instance'] = JSON.stringify(item);
+				li.setAttribute('role', 'option');
+				li.setAttribute('aria-label', item['domain']);
+
+				const btn = document.createElement('button');
+				btn.className = 'recent-item';
+				btn.type = 'button';
+				btn.setAttribute('title', item['title']);
+				btn.setAttribute('aria-label', `Continue with ${item['domain']} - ${item['title']}`);
+
+				const del = document.createElement('button');
+				del.classList.add('delete');
+				del.type = 'button';
+				del.setAttribute('title', 'Forget ' + item['domain']);
+				del.setAttribute('aria-label', 'Remove ' + item['domain'] + ' from recent servers');
+
+				const text = document.createElement('div');
+				text.innerText = "Continue with\n" + item['domain'];
+
+				if (item['thumbnail']) {
+					const img = document.createElement('img');
+					img.src = item['thumbnail'];
+					img.setAttribute('alt', ''); // decorative
+					btn.appendChild(img);
+				}
+				
+				btn.appendChild(text);
+				li.appendChild(del);
+				li.appendChild(btn);
+				list.appendChild(li);
+			}
+		}
+
+		function tootRedirect(domain, message) {
+			document.location = `https://${domain}/share?text=${encodeURIComponent(message)}`;
+		}
+
+		function updateCharCount() {
+			let text = $('#compose-field').value;
+			let count = text.length;
+			let countEl = $('#char-count');
+
+			if (text.length > 0) {
+				clearStatus();
+
+				// If user previously tried to show the link and now has text, show it automatically
+				if (userTriedToShowLink && text.trim()) {
+					userTriedToShowLink = false;
+					showLink();
+				}
+			}
+
+			countEl.textContent = `${count} / 500`;
+
+			countEl.classList.remove('warning', 'error');
+			if (count > 500) {
+				countEl.classList.add('error');
+			} else if (count > 450) {
+				countEl.classList.add('warning');
+			}
+
+			updateLinkPreview();
+
+			if (count === 450) {
+				announceToScreenReader('Approaching character limit: 450 of 500 characters used');
+			} else if (count === 500) {
+				announceToScreenReader('Character limit reached: 500 of 500 characters used');
+			}
+		}
+
+		function updateLinkPreview() {
+			if (!$('#link-output').classList.contains('hidden')) {
+				let shareLink = createLink();
+				if (shareLink) {
+					$('#link-output').textContent = shareLink;
+				}
+			}
+		}
+
+		function announceToScreenReader(message) {
+			let announcement = document.createElement('div');
+			announcement.setAttribute('aria-live', 'polite');
+			announcement.setAttribute('aria-atomic', 'true');
+			announcement.style.position = 'absolute';
+			announcement.style.left = '-10000px';
+			announcement.style.width = '1px';
+			announcement.style.height = '1px';
+			announcement.style.overflow = 'hidden';
+
+			document.body.appendChild(announcement);
+			announcement.textContent = message;
+
+			// Remove after announcement
+			setTimeout(() => {
+				document.body.removeChild(announcement);
+			}, 1000);
+		}
+
+		function createLink() {
+			let text = $('#compose-field').value.trim();
+
+			if (!text) {
+				error('Please enter a message to share first.');
+				userTriedToShowLink = true;
+				return null;
+			}
+
+			let baseUrl;
+			if (window.location.protocol === 'file:') {
+				// For local files, use the full file path
+				baseUrl = window.location.href.split('#')[0];
+			} else {
+				// For web URLs, use origin + pathname
+				baseUrl = window.location.origin + window.location.pathname;
+			}
+
+			let encodedText = encodeURIComponent(text);
+			return `${baseUrl}#text=${encodedText}`;
+		}
+
+		function showLink() {
+			let linkOutput = $('#link-output');
+
+			if (!linkOutput.classList.contains('hidden')) {
+				linkOutput.classList.add('hidden');
+				clearStatus();
+				return;
+			}
+
+			let shareLink = createLink();
+			if (!shareLink) return;
+
+			linkOutput.textContent = shareLink;
+			linkOutput.classList.remove('hidden');
+			clearStatus();
+		}
+
+		function openLink() {
+			let shareLink = createLink();
+			if (!shareLink) return;
+
+			window.location.href = shareLink;
+		}
+
+		function copyLink() {
+			let shareLink = createLink();
+			if (!shareLink) return;
+
+			if (navigator.clipboard && window.isSecureContext) {
+				navigator.clipboard.writeText(shareLink).then(() => {
+					clearStatus();
+					showButtonFeedback('#copy', 'Copy link to clipboard', 'Copied!');
+				}).catch(() => {
+					fallbackCopyToClipboard(shareLink);
+				});
+			} else {
+				fallbackCopyToClipboard(shareLink);
+			}
+		}
+
+		function fallbackCopyToClipboard(text) {
+			// Fallback method using temporary input element
+			let tempInput = document.createElement('input');
+			tempInput.value = text;
+			tempInput.style.position = 'absolute';
+			tempInput.style.left = '-9999px';
+			document.body.appendChild(tempInput);
+
+			tempInput.select();
+			tempInput.setSelectionRange(0, text.length);
+
+			try {
+				document.execCommand('copy');
+				clearStatus();
+				showButtonFeedback('#copy', 'Copy link to clipboard', 'Copied!');
+			} catch (err) {
+				error('Failed to copy link to clipboard.');
+			}
+
+			document.body.removeChild(tempInput);
+		}
+
+		function checkInstanceDomain(domain, message) {
+			const notMastodon = 'That does not appear to be a valid Mastodon server.';
+
+			fetch(`https://${domain}/api/v1/instance`)
+				.then((resp) => resp.json())
+				.then((data) => {
+					if (!data['version'] || data['version'].match(/compatible/i)) {
+						error(notMastodon);
+						return;
+					}
+					let thumbnail = data['thumbnail'];
+					let title = data['title'];
+
+					if ($('#remember').checked) {
+						let recent = getRecent();
+						recent.unshift({ domain, thumbnail, title });
+						setRecent(recent);
+					}
+
+					tootRedirect(domain, message);
+				})
+				.catch((err) => {
+					// Can't do real webfinger, because that needs an acct: parameter.
+					// But we can at least do an opportunistic attempt to support
+					// *some* servers where WEB_DOMAIN != LOCAL_DOMAIN. This only
+					// works if the redirect and the target both allow CORS.
+					fetch(`https://${domain}/.well-known/webfinger`)
+						.then((resp) => {
+							if (resp.redirected) {
+								let found = resp.url.match(/^https:\/\/([^\/]+)\/\.well-known\/webfinger/);
+								if (found) checkInstanceDomain(found[1], message);
+								else throw (new Error('Weird webfinger'));
+							} else {
+								throw (new Error('No webfinger'));
+							}
+						})
+							.catch((err) => {
+								error(notMastodon);
+								const inst = document.getElementById('instance-field');
+								if (inst) inst.setAttribute('aria-invalid', 'true');
+							});
+				});
+		}
+
+		window.addEventListener('hashchange', processHash);
+
+		window.addEventListener('pageshow', () => {
+			processHash();
+			populateRecent();
+			clearStatus();
 		});
-	});
-</script>
 
-<main data-nosnippet>
-	<noscript>
-		<div class=error>
-		Please enable JavaScript to use this service. This page requires
-		JavaScript to keep all the data in your browser. The alternative would
-		be to send message contents to the server, which would be the worse
-		decision privacy-wise.
+		window.addEventListener('DOMContentLoaded', () => {
+			$("#compose-field").addEventListener('input', updateCharCount);
+			$("#copy").addEventListener('click', copyLink);
+			$("#show").addEventListener('click', showLink);
+			$("#open").addEventListener('click', openLink);
+
+			updateCharCount();		
+
+			// Escape key to clear status messages and close privacy policy
+			document.addEventListener('keydown', (e) => {
+				if (e.key === 'Escape') {
+					clearStatus();
+
+					const content = $("#privacy-content");
+					const toggle = $("#privacy-toggle");
+					if (!content.classList.contains('hidden')) {
+						content.classList.add('hidden');
+						toggle.setAttribute('aria-expanded', 'false');
+					}
+				}
+			});
+
+			$("#instance-field").addEventListener('keydown', (e) => {
+				if (e.key === 'Enter') {
+					e.preventDefault();
+					$("#toot").click();
+				} else {
+					clearStatus();
+				}
+			});
+
+			$("#instance-field").addEventListener('click', clearStatus);
+
+			$("#remember").addEventListener('keydown', (e) => {
+				if (e.key === 'Enter') {
+					e.preventDefault();
+					// Just toggle the checkbox, don't submit the form
+					$("#remember").checked = !$("#remember").checked;
+				}
+			});
+
+			$("form").addEventListener('submit', (e) => {
+				e.preventDefault();
+
+				// domain is expected, but user might enter URL
+				let instance = $("#instance-field").value.trim();
+
+				if (instance === '') {
+					error('Please enter the domain of a Mastodon instance.');
+					document.getElementById('instance-field').setAttribute('aria-invalid', 'true');
+					return;
+				}
+
+				// remove trailing slash and username, if present
+				instance = instance.replace(/\/+(?:@.*)?$/, "");
+
+				// newbies may write https:foo or https//foo too.
+				instance = instance.replace(/^https?\W+/, "");
+
+				// Deal with user@host and @user@host, and for really advanced
+				// newbies, acct:user@host because why not :)
+				instance = instance.replace(/^(?:acct:)?@?[^@]+@/, "");
+
+				// Some advanced users may enter an FQDN with a trailing dot, but
+				// that needs to be normalized because the domain is used as a
+				// lookup key. Speaking of normalization, let's lowercase.
+				instance = instance.replace(/\.$/, "").toLowerCase();
+
+				// Check whether the input is a valid domain name, in order to
+				// prevent leaking e.g. pasted clipboard text (passwords, credit
+				// card numbers, love letters, ...) via DNS. Can't prevent
+				// every mistake, but let's catch at least the obvious cases.
+				if (!instance.match(/^(?:(?:xn--)?[a-z0-9]+[-.])*[a-z0-9]+\.[a-z]{2,}$/)) {
+					// TODO: support user readable IDN and %-encoded IDN (both uncommon)
+					error('Not a valid internet domain name.');
+					document.getElementById('instance-field').setAttribute('aria-invalid', 'true');
+					return;
+				}
+
+				$("#instance-field").value = instance;
+				// Clear any prior invalid state before verifying server
+				document.getElementById('instance-field').removeAttribute('aria-invalid');
+
+				checkInstanceDomain(instance, message);
+			});
+
+			$("#recent").addEventListener('click', (event) => {
+				const deleteBtn = event.target.closest('button.delete');
+				const recentBtn = event.target.closest('button.recent-item');
+				const li = event.target.closest('li');
+				if (!li) return;
+
+				const instance = JSON.parse(li.dataset['instance']);
+
+				if (deleteBtn) {
+					setRecent(getRecent().filter(x => x['domain'] != instance['domain']));
+					li.remove();
+					return;
+				}
+
+				if (recentBtn) {
+					const recent = getRecent();
+					recent.unshift(instance);
+					setRecent(recent);
+					tootRedirect(instance['domain'], message);
+				}
+			});
+
+			$("#privacy-toggle").addEventListener('click', () => {
+				const content = $("#privacy-content");
+				const toggle = $("#privacy-toggle");
+				const isHidden = content.classList.contains('hidden');
+
+				content.classList.toggle('hidden');
+				toggle.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+			});
+		});
+	</script>
+	<main id="main" data-nosnippet role="main" aria-label="Tootpick - Share to Mastodon link creator">
+		<noscript>
+			<div class="error" role="alert"> Please enable JavaScript to use this service. This page requires JavaScript to keep all the data in your browser. The alternative would be to send message contents to the server, which would be the worse decision privacy-wise. </div>
+		</noscript>
+		<!-- Compose interface (shown when no #text parameter is given) -->
+		<section id="compose-interface" class="interface hidden" aria-labelledby="compose-heading">
+			<h1 id="compose-heading"> Create a "Share to Mastodon" link: </h1>
+			<label for="compose-field" class="sr-only">Message to share on Mastodon</label>
+			<textarea id="compose-field" placeholder="Write your message here..." aria-describedby="char-count compose-statusline" rows="4"></textarea>
+			<div id="compose-actions" class="button-group" role="toolbar" aria-label="Link creation actions">
+				<button id="copy" type="button" aria-describedby="compose-statusline">Copy link to clipboard</button>
+				<button id="show" type="button" aria-describedby="compose-statusline">Show link</button>
+				<button id="open" type="button" aria-describedby="compose-statusline">Open link</button>
+				<span id="char-count" role="status" aria-live="polite" title="Most Mastodon instances have a character limit of only 500, so it's best to stick to that limit for maximum compatibility.">0 / 500</span>
+			</div>
+			<div id="link-output" class="hidden" role="textbox" aria-readonly="true" aria-label="Generated shareable link"></div>
+			<div id="compose-statusline" class="hidden" role="status" aria-live="polite" aria-atomic="true"></div>
+		</section>
+		<!-- Share interface (shown when the #text parameter exists) -->
+		<section id="share-interface" class="interface" aria-labelledby="share-heading">
+			<h1 id="share-heading"> Pick your Mastodon instance to toot this message: </h1>
+			<blockquote id="message-preview" role="region" aria-labelledby="message-label" title="You can edit this message on your Mastodon instance in the next step."></blockquote>
+			<div id="message-label" class="sr-only">Message to be shared</div>
+			<form id="inputline" aria-labelledby="server-form-label">
+				<div id="server-form-label" class="sr-only">Mastodon instance selection</div>
+				<span>Server:</span>
+				<label for="instance-field" title="Enter the domain name of your Mastodon instance" class="sr-only">Mastodon instance domain</label>
+				<input id="instance-field" type="text" placeholder="example.social" aria-describedby="instance-help share-statusline" autocomplete="url" inputmode="url">
+				<div id="instance-help" class="sr-only">Enter your Mastodon instance domain name, for example: mastodon.social</div>
+				<label for="remember">
+					<input type="checkbox" id="remember" checked aria-describedby="remember-help" style="margin-right: .4em;"> Remember <div id="remember-help" class="sr-only">Remember this instance for future use</div>
+				</label>
+				<input type="submit" id="toot" value="Continue" aria-describedby="share-statusline">
+			</form>
+			<div id="share-statusline" class="hidden" role="status" aria-live="polite" aria-atomic="true"></div>
+			<ul id="recent" role="listbox" aria-label="Recently used Mastodon instances">
+			</ul>
+		</section>
+	</main>
+	<footer role="contentinfo">
+		<p> Tootpick is a privacy-preserving instance picker for sharing toots </p>
+		<div>
+			<a href="https://github.com/Juerd/tootpick">Source code (GitHub)</a> · <button id="privacy-toggle" type="button" data-nosnippet aria-expanded="false" aria-controls="privacy-content">Privacy Policy</button>
 		</div>
-	</noscript>
-	<div>
-		Pick your Mastodon server to toot this message:
-	</div>
-	<blockquote id=message
-		title="You can edit the text on the next page, on your own Mastodon server.">
-	</blockquote>
-	<form id=inputline>
-		<label title="Enter the domain name of your Mastodon server (sometimes called 'instance')">
-			<span id=server>Server:</span>
-			<input id=instance placeholder="social.example.org">
-		</label>
-		<label>
-			<input type=checkbox id=remember checked> Remember
-		</label>
-		<input type=submit id=toot value="Continue">
-	</form>
-	<div id=statusline class="hidden">
-	</div>
-	<div id=recent>
-	</div>
-</main>
-<footer>
-	<a href="https://github.com/Juerd/tootpick">Tootpick</a> is a
-	privacy-preserving instance picker for sharing links from
-	news sites, blogs, etc.<br>
-	<a href="https://github.com/Juerd/tootpick">Add Tootpick to your website</a>
-	<details data-nosnippet>
-		<summary>Legal notices</summary>
-		<h4>License</h4>
-		This program is free software: you can redistribute it and/or modify it
-		under the terms of the <a href="https://www.gnu.org/licenses/agpl-3.0.html">
-		GNU Affero General Public License</a> as published by the Free Software
-		Foundation, either version 3 of the License, or (at your option) any
-		later version.
-		<h4>Disclaimer</h4>
-		This program is distributed in the hope that it will be useful,
-		but WITHOUT ANY WARRANTY; without even the implied warranty of
-		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-		GNU Affero General Public License for more details.
-		<h4>Privacy poliy</h4>
-		Tootpick does not collect or store any of your data except on your own
-		computer. The server that hosts Tootpick, and the Mastodon servers you
-		enter, will probably store your IP address and User-Agent (browser)
-		identification in a web server log file.
-	</details>
-</footer>
+		<p id="privacy-content" class="hidden" data-nosnippet role="region" aria-labelledby="privacy-toggle"> Tootpick does not collect or store any of your data except on your own computer. The server that hosts Tootpick, and the Mastodon servers you enter, will probably store your IP address and User-Agent (browser) identification in a web server log file. </p>
+	</footer>
+</body>
 
+</html>
