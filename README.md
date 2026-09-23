@@ -1,8 +1,10 @@
 # Tootpick
 
-Tootpick is a privacy-preserving tool to create shareable links for Mastodon posts and provide an easy link target for a "Mastodon share button" similar to other social media share buttons or [mailto](https://en.wikipedia.org/wiki/Mailto) links.
+Tootpick is a privacy-preserving tool to create shareable links for Mastodon posts ("toots") and provide an easy link target for a "Mastodon share button" similar to other social media share buttons or [mailto](https://en.wikipedia.org/wiki/Mailto) links.
 
 Try this demo: [Share on Mastodon <img src="https://raw.githubusercontent.com/mastodon/mastodon/main/app/javascript/images/app-icon.svg" width=12>](http://tootpick.org/#text=Checkout%20%23tootpick%20a%20privacy-preserving%20tool%20to%20create%20shareable%20links%20for%20Mastodon%20posts%20and%20provide%20an%20easy%20link%20target%20for%20a%20%22Mastodon%20share%20button%22%20similar%20to%20other%20social%20media%20share%20buttons%20%F0%9F%8E%89)
+
+Hosting and domain expenses are kindly funded by [Procolix](https://procolix.eu/en/) <3
 
 ## Using Tootpick
 
@@ -14,7 +16,7 @@ Visitor of that link with the text parameter set will then pick their Mastodon i
 
 Most Mastodon instances usually have a character limit of 500 so it's wise to keep your message shorter than that. Tootpick will warn you when you go over that.
 
-## Design goals
+## Design goals / Features
 
 ### Nothing fancy
 
@@ -33,13 +35,7 @@ Because Tootpick is a static page in between the article that has the "share"
 link and the mastodon instance, the original Referer URL won't make it to the
 instance, hiding any possibly sensitive tracking information from the instance
 admins. (It is not possible for Tootpick to prevent sending the Referer to the
-server that hosts Tootpick.)
-
-> Hi, it's me, the author of Tootpick. Because I'm not collecting any data
-> from Tootpick users, I have no idea who uses it. If you're using Tootpick on
-> your website, and want to let me know, please "star" the project on GitHub or
-> send me a message on Mastodon (`@whreq@hsnl.social`) - that way I know
-> whether I should keep maintaining it. Thanks!
+server that hosts Tootpick.) 
 
 ### Multiple instances
 
@@ -66,9 +62,11 @@ by the script. A user may provide the wrong domain, a URL instead of the bare
 domain name, an account, or the account domain instead of the web domain, and
 Tootpick tries to recover from that and do the right thing.
 
+## More Information
+
 <details><summary>
 
-## Why not just link directly to Mastodon?
+### Why not just link directly to Mastodon?
 
 </summary>
 Mastodon is part of the fediverse, a federated network. By design, there is no
@@ -80,7 +78,7 @@ Mastodon users will not be on that server.
 
 <details><summary>
 
-## Self-hosting
+### Self-hosting
 
 </summary>
 Instead of using the central tootpick.org service, tootpick can also be
@@ -96,7 +94,7 @@ service on tootpick.org.
 
 <details><summary>
 
-## Button image
+### Button image
 
 </summary>
 No button image is provided at this point, but the <a href="https://github.com/mastodon/mastodon/tree/main/app/javascript/images"> official Mastodon logo</a> is probably a good starting point for designing your own.
@@ -104,7 +102,7 @@ No button image is provided at this point, but the <a href="https://github.com/m
 
 <details><summary>
 
-## Fragment parameters
+### Fragment parameters
 
 </summary>
 Although Tootpick currently only uses a single parameter, `text`, it is ready
@@ -158,7 +156,7 @@ would normally be wrong. It can be used like
 
 <details><summary>
 
-## Similar projects
+### Similar projects
 
 </summary>
 Tootpick is not the first of its kind. It draws inspiration from:
@@ -170,7 +168,7 @@ Tootpick is not the first of its kind. It draws inspiration from:
 
 <details><summary>
 
-## Future improvements
+<!-- ### Future improvements
 
 </summary>
 At some point in the future, I hope to:
@@ -179,4 +177,8 @@ At some point in the future, I hope to:
 - Supply a list of existing instances. Not sure if it's useful enough to add
   extra weight, and not sure how to determine which instances to include or
   exclude. Please let me know what you think!
-</details>
+</details> -->
+
+## License
+
+This project is licensed under the AGPLv3 license. See [LICENSE](LICENSE) for more information.
