@@ -63,7 +63,6 @@ domain name, an account, or the account domain instead of the web domain, and
 Tootpick tries to recover from that and do the right thing.
 
 ## More Information
-
 <details><summary>
 
 ### Why not just link directly to Mastodon?
@@ -166,9 +165,9 @@ Tootpick is not the first of its kind. It draws inspiration from:
 - [Mastodon Share Button](https://aly-ve.github.io/Mastodon-share-button/)
 </details>
 
-<details><summary>
+<!--<details><summary>
 
-<!-- ### Future improvements
+### Future improvements
 
 </summary>
 At some point in the future, I hope to:
